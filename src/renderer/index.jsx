@@ -17,5 +17,5 @@ render(
         <PaperList />
       </SplitPane>
     </Provider>,
-    document.getElementById(".content")
+    document.getElementById("content")
 )
