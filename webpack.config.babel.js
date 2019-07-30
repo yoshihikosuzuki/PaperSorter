@@ -10,6 +10,9 @@ module.exports = [
       path: join(__dirname, dest),
       filename: "main.js"
     },
+    resolve: {
+      extensions: ["*", ".js", ".jsx"]
+    },
     module: {
       rules: [
         {
@@ -27,6 +30,9 @@ module.exports = [
     output: {
       path: join(__dirname, dest),
       filename: "renderer.js"
+    },
+    resolve: {
+      extensions: ["*", ".js", ".jsx"]
     },
     module: {
       rules: [

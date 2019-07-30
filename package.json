@@ -5,7 +5,7 @@
     "main": "src/build/main.js",
     "scripts": {
         "start": "electron .",
-        "build": "webpack --mode production",
+        "build": "webpack --mode development",
         "release": "electron-packager . PaperSorter --platform=darwin --arch=x64",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -13,6 +13,7 @@
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
         "react-redux": "^7.1.0",
+        "react-split-pane": "^0.1.87",
         "redux": "^4.0.4"
     },
     "devDependencies": {
@@ -35,5 +36,5 @@
     "bugs": {
         "url": "https://github.com/yoshihikosuzuki/PaperSorter/issues"
     },
-    "homepage": "."
+    "homepage": "https://github.com/yoshihikosuzuki/PaperSorter"
 }
