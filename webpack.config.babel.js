@@ -1,14 +1,15 @@
+import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import { join } from "path"
 const dest = "src/build"
 
-module.exports = [
-  {
-    // For Main
-    target: "electron-main",
-    entry: "./src/main/main.js",
+export default (env, argv) => {
+  const MAIN = !!(env && env.main)
+  return {
+    target: MAIN ? "electron-main" : "electron-renderer",
+    entry: MAIN ? "./src/main/main.js" : "./src/renderer/index.jsx",
     output: {
       path: join(__dirname, dest),
-      filename: "main.js"
+      filename: MAIN ? "main.js" : "renderer.js"
     },
     resolve: {
       extensions: ["*", ".js", ".jsx"]
@@ -16,32 +17,31 @@ module.exports = [
     module: {
       rules: [
         {
-          loader: "babel-loader",
           test: /\.(js)x?$/,
-          exclude: "/node_modules/"
-        }
-      ]
-    }
-  },
-  {
-    // For Renderer
-    target: "electron-renderer",
-    entry: "./src/renderer/index.jsx",
-    output: {
-      path: join(__dirname, dest),
-      filename: "renderer.js"
-    },
-    resolve: {
-      extensions: ["*", ".js", ".jsx"]
-    },
-    module: {
-      rules: [
+          exclude: "/node_modules/",
+          use: [
+            "babel-loader"
+          ]
+        },
         {
-          loader: "babel-loader",
-          test: /\.(js)x?$/,
-          exclude: "/node_modules/"
+          test: /\.scss$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: "css-loader",
+              options: {
+                modules: true
+              }
+            },
+            "sass-loader"
+          ]
         }
       ]
-    }
+    },
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: "bundle.css"
+      })
+    ]
   }
-]
+}

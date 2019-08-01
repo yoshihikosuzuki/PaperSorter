@@ -1,13 +1,24 @@
+import { ADD_TAG, addTag } from "../actions/index"
+
 const initState = {
-    tags: null,
-    papers: null
+  tags: [],
+  papers: []
 }
 
-export default function reducer(state=initState, action) {
-    switch (action.type) {
-    case 'OPEN':
-        return state
+export default function reducer(state = initState, action) {
+  switch (action.type) {
+    case 'ADD_TAG':
+      return Object.assign({}, state, {
+        tags: [
+          ...state.tags,
+          {
+            name: action.name,
+            childs: [],
+            papers: []
+          }
+        ]
+      })
     default:
-        return state
-    }
+      return state
+  }
 }
