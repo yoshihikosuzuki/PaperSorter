@@ -1,7 +1,7 @@
 import React from "react"
 
-export default class PaperList extends React.Component {
-    render() {
-        return <div>paper list</div>
-    }
+export default function PaperList({ currentPaperList }) {
+  console.log(JSON.stringify(currentPaperList))
+  console.log(currentPaperList)
+  return <div>paper list</div>
 }

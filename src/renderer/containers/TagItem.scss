@@ -1,0 +1,17 @@
+.tagitem {
+  user-select: none;
+  list-style: none;
+  list-style-position: inside;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.childtag {
+  padding-left: 1rem;
+}
+
+ul {
+  padding-inline-start: 15px;
+  margin-block-start: 5px;
+  margin-block-end: 0px;
+}

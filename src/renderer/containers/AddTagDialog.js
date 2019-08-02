@@ -10,25 +10,18 @@ import { addTag } from "../actions/index"
 
 const AddTagDialog = ({ dispatch }) => {
   const [open, setOpen] = React.useState(false)
-  const [name, setName] = React.useState("")
   let inputText = ""
 
-  function handleClickOpen() {
-    setOpen(true)
-  }
-
-  function handleClose() {
-    setOpen(false)
-  }
-
-  function handleSubmit() {
+  const handleOpen = () => { setOpen(true) }
+  const handleClose = () => { setOpen(false) }
+  const handleSubmit = () => {
     dispatch(addTag(inputText.value))
     handleClose()
   }
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button variant="outlined" color="primary" onClick={handleOpen}>
         Add a tag
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
