@@ -3,7 +3,7 @@ import AddTagDialog from "../containers/AddTagDialog"
 import TagItem from "../containers/TagItem"
 
 export default function TagList({ tags }) {
-  console.log(JSON.stringify(tags))
+  console.log("tags: " + JSON.stringify(tags))
   return (
     <div>
       <AddTagDialog />

@@ -1,0 +1,36 @@
+
+.list {
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+}
+
+.list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.list th {
+  user-select: none;
+  background-color: #ecf0f1;
+  border: solid 1px #bdc3c7;
+  border-top: none;
+  padding: 0.3rem;
+  font-weight: normal;
+}
+
+.list th:first-child,
+.list td:first-child {
+  border-left: none;
+}
+
+.list th:last-child,
+.list td:last-child {
+  border-right: none;
+}
+
+.list td {
+  border: solid 1px #bdc3c7;
+  padding: 0.3rem;
+}

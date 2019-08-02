@@ -1,10 +1,18 @@
 import { connect } from "react-redux"
 import PaperList from "../components/PaperList"
+import { selectPaper } from "../actions/index"
 
 function mapStateToProps(state) {
+  console.log("papers: " + JSON.stringify(state.papers))
   return {
-    currentPaperList: state.currentPaperList
+    selectedPapers: state.selectedPapers,
   }
 }
 
-export default connect(mapStateToProps)(PaperList)
+function mapDispatchToProps(dispatch) {
+  return {
+    selectPaper: (name) => dispatch(selectPaper(name))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaperList)
