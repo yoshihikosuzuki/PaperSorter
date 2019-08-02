@@ -8,4 +8,10 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(TagList)
+const mapDispatchToProps = (dispatch) => ({
+  handleClick: (name) => {
+    dispatch(addTag(name))
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(TagList)

@@ -1,13 +1,12 @@
 import React from "react"
-import AddTagDialog from "./AddTagDialog"
+import AddTagDialog from "../containers/AddTagDialog"
 
-export default class TagList extends React.Component {
-  render() {
-    return (
-      <div>
-        <AddTagDialog />
-        tag list
+export default function TagList(props) {
+  console.log(props)
+  return (
+    <div>
+      <AddTagDialog />
+      tag list
       </div>
-    )
-  }
+  )
 }
