@@ -6,6 +6,7 @@ function mapStateToProps(state) {
   console.log("papers: " + JSON.stringify(state.papers))
   return {
     selectedPapers: state.selectedPapers,
+    currentPaper: state.currentPaper
   }
 }
 

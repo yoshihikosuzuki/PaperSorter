@@ -1,16 +1,8 @@
-import {
-  ADD_TAG,
-  addTag,
-  CHECK_TAG,
-  checkTag,
-  ADD_PAPER,
-  addPaper
-} from "../actions/index"
-
 const initState = {
-  selectedPapers: [],
   tags: [{ name: "unclassified", checked: true, childs: [], papers: [] }],
-  papers: []
+  papers: [],
+  selectedPapers: [],
+  currentPaper: ""
 }
 
 const updateSelectedPapers = (tags) => {
@@ -26,26 +18,26 @@ const updateSelectedPapers = (tags) => {
 }
 
 const checkTagReducer = (state, action) => {
-  const newTags = state.tags.map(
-    (tag) =>
-      Object.assign({}, tag, {
-        checked: tag.name === action.name ? !tag.checked : tag.checked
-      })
+  const newTags = state.tags.map((tag) =>
+    Object.assign({}, tag, {
+      checked: tag.name === action.name ? !tag.checked : tag.checked
+    })
   )
+  const newSelectedPapers = updateSelectedPapers(newTags)
   return Object.assign({}, state, {
-    selectedPapers: updateSelectedPapers(newTags),
-    tags: newTags
+    tags: newTags,
+    selectedPapers: newSelectedPapers,
+    currentPaper: newSelectedPapers.includes(state.currentPaper) ? state.currentPaper : ""
   })
 }
 
 const addPaperReducer = (state, action) => {
-  const newTags = state.tags.map(
-    (tag) =>
-      Object.assign({}, tag, {
-        papers: tag.name !== "unclassified"
-          ? tag.papers
-          : [...tag.papers, action.name]
-      })
+  const newTags = state.tags.map((tag) =>
+    Object.assign({}, tag, {
+      papers: tag.name !== "unclassified"
+        ? tag.papers
+        : [...tag.papers, action.name]
+    })
   )
   const newPapers = [
     ...state.papers,
@@ -54,10 +46,11 @@ const addPaperReducer = (state, action) => {
       tags: ["unclassified"]
     }
   ]
+  const newSelectedPapers = updateSelectedPapers(newTags)
   return Object.assign({}, state, {
-    selectedPapers: updateSelectedPapers(newTags),
     tags: newTags,
-    papers: newPapers
+    papers: newPapers,
+    selectedPapers: newSelectedPapers
   })
 }
 
@@ -81,12 +74,15 @@ export default function reducer(state = initState, action) {
       return addPaperReducer(state, action)
     case 'ADD_TAG_TO_PAPER':
       return Object.assign({}, state, {
-        papers: state.papers.map(
-          (paper) =>
-            Object.assign({}, paper, {
-              tags: paper.path === action.name ? paper.tags.add(action.name) : paper.tags
-            })
+        papers: state.papers.map((paper) =>
+          Object.assign({}, paper, {
+            tags: paper.path === action.name ? paper.tags.add(action.name) : paper.tags
+          })
         )
+      })
+    case 'SELECT_PAPER':
+      return Object.assign({}, state, {
+        currentPaper: action.name
       })
     default:
       return state

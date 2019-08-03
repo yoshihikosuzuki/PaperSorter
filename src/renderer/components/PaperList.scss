@@ -1,4 +1,3 @@
-
 .list {
   background-color: #fff;
   width: 100%;
@@ -33,4 +32,12 @@
 .list td {
   border: solid 1px #bdc3c7;
   padding: 0.3rem;
+}
+
+.paper_normal:hover {
+  background-color: #ffbb7f;
+}
+
+.paper_selected {
+  background-color: #ffa455;
 }
