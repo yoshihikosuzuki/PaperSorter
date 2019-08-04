@@ -1,10 +1,10 @@
 import { connect } from "react-redux"
 import TagList from "../components/TagList"
-import { addTag } from "../actions/index"
 
 function mapStateToProps(state) {
   return {
-    tags: state.tags
+    tags: state.tags,
+    currentPaper: state.currentPaper
   }
 }
 

@@ -11,7 +11,22 @@
 }
 
 ul {
-  padding-inline-start: 15px;
+  padding-inline-start: 10px;
   margin-block-start: 5px;
   margin-block-end: 0px;
+}
+
+.normal {
+  padding: 0.2rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selected {
+  background-color: #ffa455;
+  padding: 0.2rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

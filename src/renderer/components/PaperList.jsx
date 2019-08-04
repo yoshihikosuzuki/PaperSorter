@@ -1,7 +1,7 @@
 import React from "react"
 import AddPaperDialog from "../containers/AddPaperDialog"
-import { list, paper_normal, paper_selected } from "./PaperList.scss"
-
+import { list, selected, normal } from "./PaperList.scss"
+const { shell } = require("electron").remote
 
 export default function PaperList({
   selectedPapers,
@@ -24,9 +24,10 @@ export default function PaperList({
             <tr
               key={index}
               className={
-                currentPaper && currentPaper === paper ? paper_selected : paper_normal
+                currentPaper && currentPaper === paper ? selected : normal
               }
               onClick={() => selectPaper(paper)}
+              onDoubleClick={() => shell.openItem(paper)}
             >
               <td>{paper}</td>
             </tr>

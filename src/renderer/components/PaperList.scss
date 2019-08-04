@@ -34,10 +34,10 @@
   padding: 0.3rem;
 }
 
-.paper_normal:hover {
-  background-color: #ffbb7f;
+.selected {
+  background-color: #ffa455;
 }
 
-.paper_selected {
-  background-color: #ffa455;
+.normal:hover {
+  background-color: #ffbb7f;
 }
