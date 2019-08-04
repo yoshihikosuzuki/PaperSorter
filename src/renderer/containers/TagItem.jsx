@@ -12,19 +12,17 @@ const TagItem = ({ dispatch, tag, currentPaper }) => {
 
   return (
     <li
-      className={[
-        tagitem,
-        tag.papers.includes(currentPaper) ? selected : normal
-      ].join(" ")}>
+      className={tagitem}>
       <FormControlLabel
         control={
           <Checkbox
+            m={-5}
             checked={tag.checked}
             onChange={handleChange}
             color="primary"
           />
         }
-        label={tag.name}
+        label={<span className={tag.papers.includes(currentPaper) ? selected : normal}>{tag.name}</span>}
       />
     </li>
   )
