@@ -15,11 +15,9 @@ const AddPaperDialog = ({ dispatch }) => {
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleOpen}>
-        Add a paper
-      </Button>
-    </div>
+    <Button variant="outlined" display="inline" color="primary" onClick={handleOpen}>
+      Add a paper
+    </Button>
   )
 }
 

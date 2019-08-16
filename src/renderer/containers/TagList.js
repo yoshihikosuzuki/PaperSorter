@@ -4,7 +4,7 @@ import TagList from "../components/TagList"
 function mapStateToProps(state) {
   return {
     tags: state.tags,
-    currentPaper: state.currentPaper
+    selectedPaper: state.selectedPaper
   }
 }
 

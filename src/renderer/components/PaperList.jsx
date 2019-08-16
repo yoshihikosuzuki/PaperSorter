@@ -1,18 +1,35 @@
+import { basename } from "path"
 import React from "react"
+import Button from '@material-ui/core/Button'
 import AddPaperDialog from "../containers/AddPaperDialog"
+import EditPaperTagsDialog from "../containers/EditPaperTagsDialog"
 import { list, selected, normal } from "./PaperList.scss"
 const { shell } = require("electron").remote
 
 export default function PaperList({
-  selectedPapers,
-  currentPaper,
-  selectPaper
+  tags,
+  filteredPapers,
+  selectedPaper,
+  selectPaper,
+  deletePaper
 }) {
-  console.log("selected papers: " + JSON.stringify(selectedPapers))
-  console.log("current paper: " + JSON.stringify(currentPaper))
+  console.log("filtered papers: " + JSON.stringify(filteredPapers))
+  console.log("selected paper: " + JSON.stringify(selectedPaper))
+
+  const handleClickDelete = () => {
+    if (selectedPaper !== "") deletePaper()
+  }
+
   return (
     <div className={list}>
       <AddPaperDialog />
+      <EditPaperTagsDialog
+        tags={tags}
+        selectedPaper={selectedPaper}
+      />
+      <Button variant="outlined" display="inline" color="primary" onClick={handleClickDelete}>
+        Delete selected paper
+      </Button>
       <table>
         <thead>
           <tr>
@@ -20,18 +37,24 @@ export default function PaperList({
           </tr>
         </thead>
         <tbody>
-          {Array.from(selectedPapers).map((paper, index) => (
-            <tr
-              key={index}
-              className={
-                currentPaper && currentPaper === paper ? selected : normal
-              }
-              onClick={() => selectPaper(paper)}
-              onDoubleClick={() => shell.openItem(paper)}
-            >
-              <td>{paper}</td>
-            </tr>
-          ))}
+          {Array.from(filteredPapers)
+            .sort((a, b) => {
+              const baseA = basename(a).toUpperCase()
+              const baseB = basename(b).toUpperCase()
+              return baseA < baseB ? -1 : (baseA > baseB ? 1 : 0)
+            })
+            .map((paper, index) => (
+              <tr
+                key={index}
+                className={
+                  selectedPaper && selectedPaper === paper ? selected : normal
+                }
+                onClick={() => selectPaper(paper)}
+                onDoubleClick={() => shell.openItem(paper)}
+              >
+                <td>{basename(paper)}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

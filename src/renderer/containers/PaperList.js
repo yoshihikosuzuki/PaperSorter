@@ -1,18 +1,20 @@
 import { connect } from "react-redux"
 import PaperList from "../components/PaperList"
-import { selectPaper } from "../actions/index"
+import { selectPaper, deletePaper } from "../actions/index"
 
 function mapStateToProps(state) {
   console.log("papers: " + JSON.stringify(state.papers))
   return {
-    selectedPapers: state.selectedPapers,
-    currentPaper: state.currentPaper
+    tags: state.tags,
+    filteredPapers: state.filteredPapers,
+    selectedPaper: state.selectedPaper
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    selectPaper: (name) => dispatch(selectPaper(name))
+    selectPaper: (name) => dispatch(selectPaper(name)),
+    deletePaper: () => dispatch(deletePaper())
   }
 }
 

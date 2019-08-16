@@ -12,18 +12,18 @@ const store = new Store({
   }
 })
 
-const updateSelectedPapers = (tags) => {
-  /* Calculater intersection of the papers in the checked tags */
+const updateFilteredPapers = (tags, papers) => {
+  /* Calculate intersection of the papers in the checked tags */
   const checkedTags = tags.filter((tag) => tag.checked)
-  if (checkedTags.length == 0) return []
+  if (checkedTags.length == 0) return papers.map(paper => paper.name)
   return checkedTags.map((tag) => tag.papers).reduce((acc, cur) => acc.filter(x => cur.includes(x)))
 }
 
 const initState = {
   tags: store.get("tags"),
   papers: store.get("papers"),
-  selectedPapers: updateSelectedPapers(store.get("tags")),
-  currentPaper: ""
+  filteredPapers: updateFilteredPapers(store.get("tags"), store.get("papers")),
+  selectedPaper: ""
 }
 
 const addTag = (state, action) => {
@@ -40,17 +40,33 @@ const addTag = (state, action) => {
 }
 
 const checkTag = (state, action) => {
-  const newTags = state.tags.map((tag) =>
-    Object.assign({}, tag, {
+  const newTags = state.tags.map(tag => Object.assign({}, tag, {
       checked: tag.name === action.name ? !tag.checked : tag.checked
     })
   )
   store.set("tags", newTags)
-  const newSelectedPapers = updateSelectedPapers(newTags)
+  const newFilteredPapers = updateFilteredPapers(newTags, state.papers)
   return Object.assign({}, state, {
     tags: newTags,
-    selectedPapers: newSelectedPapers,
-    currentPaper: newSelectedPapers.includes(state.currentPaper) ? state.currentPaper : ""
+    filteredPapers: newFilteredPapers,
+    selectedPaper: newFilteredPapers.includes(state.selectedPaper) ? state.selectedPaper : ""
+  })
+}
+
+const deleteTags = (state, action) => {
+  console.log(action.names)
+  const newTags = state.tags.filter(tag => !action.names.includes(tag.name))
+  const newPapers = state.papers.map(paper => Object.assign({}, paper, {
+    tags: paper.tags.filter(tagName => !action.names.includes(tagName))   // TODO: set ["unclassified"] if tags become empty
+  }))
+  store.set("tags", newTags)
+  store.set("papers", newPapers)
+  const newFilteredPapers = updateFilteredPapers(newTags, newPapers)
+  return Object.assign({}, state, {
+    tags: newTags,
+    papers: newPapers,
+    filteredPapers: newFilteredPapers,
+    selectedPaper: newFilteredPapers.includes(state.selectedPaper) ? state.selectedPaper : ""
   })
 }
 
@@ -68,29 +84,52 @@ const addPaper = (state, action) => {
     name: action.name,
     tags: ["unclassified"]
   }]
-  const newSelectedPapers = updateSelectedPapers(newTags)
+  const newFilteredPapers = updateFilteredPapers(newTags, newPapers)
   store.set("tags", newTags)
   store.set("papers", newPapers)
   return Object.assign({}, state, {
     tags: newTags,
     papers: newPapers,
-    selectedPapers: newSelectedPapers
-  })
-}
-
-const addTagToPaper = (state, action) => {
-  const newPapers = state.papers.map((paper) => Object.assign({}, paper, {
-    tags: paper.path === action.name ? paper.tags.add(action.name) : paper.tags
-  }))
-  store.set("papers", newPapers)
-  return Object.assign({}, state, {
-    papers: newPapers
+    filteredPapers: newFilteredPapers
   })
 }
 
 const selectPaper = (state, action) => {
   return Object.assign({}, state, {
-    currentPaper: action.name
+    selectedPaper: action.name
+  })
+}
+
+const deletePaper = (state) => {
+  const newTags = state.tags.map(tag => Object.assign({}, tag, {
+    papers: tag.papers.filter(paperName => paperName !== state.selectedPaper)
+  }))
+  const newPapers = state.papers.filter(paper => paper.name !== state.selectedPaper)
+  const newFilteredPapers = state.filteredPapers.filter(paperName => paperName !== state.selectedPaper)
+  store.set("tags", newTags)
+  store.set("papers", newPapers)
+  return Object.assign({}, state, {
+    tags: newTags,
+    papers: newPapers,
+    filteredPapers: newFilteredPapers,
+    selectedPaper: ""
+  })
+}
+
+const editPaperTags = (state, action) => {
+  const newTags = state.tags.map(tag => Object.assign({}, tag, {
+    papers: action.checkedTags.includes(tag.name)
+      ? Array.from(new Set([...tag.papers, action.paperName]))
+      : tag.papers.filter(paperName => paperName !== action.paperName)
+  }))
+  const newPapers = state.papers.map(paper => Object.assign({}, paper, {
+    tags: action.checkedTags
+  }))
+  store.set("tags", newTags)
+  store.set("papers", newPapers)
+  return Object.assign({}, state, {
+    tags: newTags,
+    papers: newPapers
   })
 }
 
@@ -100,12 +139,16 @@ export default function reducer(state = initState, action) {
       return addTag(state, action)
     case 'CHECK_TAG':
       return checkTag(state, action)
+    case 'DELETE_TAGS':
+      return deleteTags(state, action)
     case 'ADD_PAPER':
       return addPaper(state, action)
-    case 'ADD_TAG_TO_PAPER':
-      return addTagToPaper(state, action)
     case 'SELECT_PAPER':
       return selectPaper(state, action)
+    case 'DELETE_PAPER':
+      return deletePaper(state)
+    case 'EDIT_PAPER_TAGS':
+      return editPaperTags(state, action)
     default:
       return state
   }

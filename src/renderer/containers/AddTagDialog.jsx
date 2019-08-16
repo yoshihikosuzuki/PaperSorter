@@ -20,8 +20,8 @@ const AddTagDialog = ({ dispatch }) => {
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleOpen}>
+    <div style={{display: "inline"}}>
+      <Button variant="outlined" display="inline" color="primary" onClick={handleOpen}>
         Add a tag
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -32,17 +32,17 @@ const AddTagDialog = ({ dispatch }) => {
             margin="dense"
             id="tag-name"
             label="Tag Name"
-            inputRef={ref => {inputText = ref}}
+            inputRef={ref => { inputText = ref }}
             fullWidth
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
-      </Button>
+          </Button>
           <Button onClick={handleSubmit} color="primary">
             OK
-      </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
