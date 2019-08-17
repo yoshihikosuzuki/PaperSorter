@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+import createMenu from './menu'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -34,6 +35,7 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow()
+  createMenu(win)
 })
 
 // Quit when all windows are closed.

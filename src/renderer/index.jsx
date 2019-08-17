@@ -6,6 +6,7 @@ import SplitPane from "react-split-pane"
 import TagList from "./containers/TagList"
 import PaperList from "./containers/PaperList"
 import reducer from "./reducers/index"
+import "./search.js"
 import "./style.scss"
 
 const store = createStore(reducer)

@@ -4,7 +4,7 @@ import DeleteTagsDialog from "../containers/DeleteTagsDialog"
 import TagItem from "../containers/TagItem"
 
 export default function TagList({ tags, selectedPaper }) {
-  console.log("tags: " + JSON.stringify(tags))
+  //console.log("tags: " + JSON.stringify(tags))
   return (
     <div>
       <AddTagDialog />

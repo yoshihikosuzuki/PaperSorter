@@ -19,10 +19,10 @@ return ({
   })
 }
 
-export function addPaper(name) {
+export function addPapers(paperNames) {
   return ({
-    type: 'ADD_PAPER',
-    name
+    type: 'ADD_PAPERS',
+    paperNames
   })
 }
 

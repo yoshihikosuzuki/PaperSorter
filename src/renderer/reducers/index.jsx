@@ -15,8 +15,9 @@ const store = new Store({
 const updateFilteredPapers = (tags, papers) => {
   /* Calculate intersection of the papers in the checked tags */
   const checkedTags = tags.filter((tag) => tag.checked)
-  if (checkedTags.length == 0) return papers.map(paper => paper.name)
-  return checkedTags.map((tag) => tag.papers).reduce((acc, cur) => acc.filter(x => cur.includes(x)))
+  return checkedTags.length == 0
+    ? papers.map(paper => paper.name)
+    : checkedTags.map((tag) => tag.papers).reduce((acc, cur) => acc.filter(x => cur.includes(x)))
 }
 
 const initState = {
@@ -41,8 +42,8 @@ const addTag = (state, action) => {
 
 const checkTag = (state, action) => {
   const newTags = state.tags.map(tag => Object.assign({}, tag, {
-      checked: tag.name === action.name ? !tag.checked : tag.checked
-    })
+    checked: tag.name === action.name ? !tag.checked : tag.checked
+  })
   )
   store.set("tags", newTags)
   const newFilteredPapers = updateFilteredPapers(newTags, state.papers)
@@ -70,20 +71,21 @@ const deleteTags = (state, action) => {
   })
 }
 
-const addPaper = (state, action) => {
-  const paperNames = state.papers.map((paper) => paper.name)
-  if (paperNames.includes(action.name)) {
+const addPapers = (state, action) => {
+  const registeredPapers = state.papers.map(paper => paper.name)
+  const notRegisteredPapers = action.paperNames.filter(paperName => !registeredPapers.includes(paperName))
+  if (notRegisteredPapers.length == 0) {
     return state
   }
   const newTags = state.tags.map((tag) => Object.assign({}, tag, {
     papers: tag.name !== "unclassified"
       ? tag.papers
-      : [...tag.papers, action.name]
+      : [...tag.papers, ...notRegisteredPapers]
   }))
-  const newPapers = [...state.papers, {
-    name: action.name,
+  const newPapers = [...state.papers, ...notRegisteredPapers.map(paperName => ({
+    name: paperName,
     tags: ["unclassified"]
-  }]
+  }))]
   const newFilteredPapers = updateFilteredPapers(newTags, newPapers)
   store.set("tags", newTags)
   store.set("papers", newPapers)
@@ -141,8 +143,8 @@ export default function reducer(state = initState, action) {
       return checkTag(state, action)
     case 'DELETE_TAGS':
       return deleteTags(state, action)
-    case 'ADD_PAPER':
-      return addPaper(state, action)
+    case 'ADD_PAPERS':
+      return addPapers(state, action)
     case 'SELECT_PAPER':
       return selectPaper(state, action)
     case 'DELETE_PAPER':

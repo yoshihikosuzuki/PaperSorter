@@ -1,7 +1,7 @@
 import { basename } from "path"
 import React from "react"
 import Button from '@material-ui/core/Button'
-import AddPaperDialog from "../containers/AddPaperDialog"
+import AddPapersDialog from "../containers/AddPapersDialog"
 import EditPaperTagsDialog from "../containers/EditPaperTagsDialog"
 import { list, selected, normal } from "./PaperList.scss"
 const { shell } = require("electron").remote
@@ -13,8 +13,8 @@ export default function PaperList({
   selectPaper,
   deletePaper
 }) {
-  console.log("filtered papers: " + JSON.stringify(filteredPapers))
-  console.log("selected paper: " + JSON.stringify(selectedPaper))
+  //console.log("filtered papers: " + JSON.stringify(filteredPapers))
+  //console.log("selected paper: " + JSON.stringify(selectedPaper))
 
   const handleClickDelete = () => {
     if (selectedPaper !== "") deletePaper()
@@ -22,7 +22,7 @@ export default function PaperList({
 
   return (
     <div className={list}>
-      <AddPaperDialog />
+      <AddPapersDialog />
       <EditPaperTagsDialog
         tags={tags}
         selectedPaper={selectedPaper}

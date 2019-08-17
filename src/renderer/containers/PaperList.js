@@ -3,7 +3,7 @@ import PaperList from "../components/PaperList"
 import { selectPaper, deletePaper } from "../actions/index"
 
 function mapStateToProps(state) {
-  console.log("papers: " + JSON.stringify(state.papers))
+  //console.log("papers: " + JSON.stringify(state.papers))
   return {
     tags: state.tags,
     filteredPapers: state.filteredPapers,
