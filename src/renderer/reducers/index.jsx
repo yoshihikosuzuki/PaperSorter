@@ -2,12 +2,33 @@ import Store from "electron-store"
 
 const store = new Store({
   defaults: {
-    tags: [{
-      name: "unclassified",
-      checked: true,
-      children: [],
-      papers: []
-    }],
+    tags: [
+      {
+        name: "# file status",
+        checked: false,
+        children: [
+          {
+            name: "unclassified",
+            checked: true,
+            children: [],
+            papers: []
+          },
+          {
+            name: "unread",
+            checked: false,
+            children: [],
+            papers: []
+          },
+          {
+            name: "read",
+            checked: false,
+            children: [],
+            papers: []
+          }
+        ],
+        papers: []
+      }
+    ],
     papers: []
   }
 })
@@ -18,8 +39,6 @@ const flattenTags = (tags) => {
 }
 
 const updateFilteredPapers = (tags, papers) => {
-  console.log(tags)
-  console.log(papers)
   /* Calculate intersection of the papers in the checked tags */
   const checkedTags = flattenTags(tags).filter(tag => tag.checked)
   return checkedTags.length == 0
@@ -78,17 +97,16 @@ const _addTag = (tag, tagName, parentTagName) => {
 
 const addTag = (state, action) => {
   /* Add a tag as a child of the specified tag while keeping the name order sorted */
-  console.log("addTag:", action.tagName)
   if (doesExists(state.tags, action.tagName)) {
     return state
   }
   const newTags = action.parentTagName === ""
-    ? [...state.tags, {
+    ? sortTags([...state.tags, {
       name: action.tagName,
       checked: false,
       children: [],
       papers: []
-    }]   // root tag
+    }])   // root tag
     : state.tags.map(tag => _addTag(tag, action.tagName, action.parentTagName))   // child tag
   store.set("tags", newTags)
   return Object.assign({}, state, {
@@ -122,7 +140,6 @@ const _deleteTags = (tags, tagNames) => {
 
 const deleteTags = (state, action) => {
   /* Delete the tag(s) and all of its/their children tags */
-  console.log(action.names)
   const newTags = _deleteTags(state.tags, action.names)
   const remainingTags = flattenTags(newTags)
   const newPapers = state.papers.map(paper => Object.assign({}, paper, {
@@ -139,17 +156,22 @@ const deleteTags = (state, action) => {
   })
 }
 
+const _addPapers = (tag, paperNames) => {
+  return Object.assign({}, tag, {
+    papers: tag.name !== "unclassified"
+      ? tag.papers
+      : [...tag.papers, ...paperNames],
+    children: tag.children.map(childTag => _addPapers(childTag, paperNames))
+  })
+}
+
 const addPapers = (state, action) => {
   const registeredPapers = state.papers.map(paper => paper.name)
   const notRegisteredPapers = action.paperNames.filter(paperName => !registeredPapers.includes(paperName))
   if (notRegisteredPapers.length == 0) {
     return state
   }
-  const newTags = state.tags.map(tag => Object.assign({}, tag, {
-    papers: tag.name !== "unclassified"
-      ? tag.papers
-      : [...tag.papers, ...notRegisteredPapers]
-  }))
+  const newTags = state.tags.map(tag => _addPapers(tag, notRegisteredPapers))
   const newPapers = [...state.papers, ...notRegisteredPapers.map(paperName => ({
     name: paperName,
     tags: ["unclassified"]
@@ -170,12 +192,17 @@ const selectPaper = (state, action) => {
   })
 }
 
+const _deletePaper = (tag, selectedPaper) => {
+  return Object.assign({}, tag, {
+    papers: tag.papers.filter(paper => paper !== selectedPaper),
+    children: tag.children.map(childTag => _deletePaper(childTag, selectedPaper))
+  })
+}
+
 const deletePaper = (state) => {
-  const newTags = state.tags.map(tag => Object.assign({}, tag, {
-    papers: tag.papers.filter(paperName => paperName !== state.selectedPaper)
-  }))
+  const newTags = state.tags.map(tag => _deletePaper(tag, state.selectedPaper))
   const newPapers = state.papers.filter(paper => paper.name !== state.selectedPaper)
-  const newFilteredPapers = state.filteredPapers.filter(paperName => paperName !== state.selectedPaper)
+  const newFilteredPapers = state.filteredPapers.filter(paper => paper !== state.selectedPaper)
   store.set("tags", newTags)
   store.set("papers", newPapers)
   return Object.assign({}, state, {

@@ -2,7 +2,7 @@ import React from "react"
 import AddTagDialog from "../containers/AddTagDialog"
 import DeleteTagsDialog from "../containers/DeleteTagsDialog"
 import TagItem from "./TagItem"
-import { tagitem, childtag } from "./TagItem.scss"
+import { list, tagitem, childtag, scroll } from "./TagItem.scss"
 
 export default function TagList({ tags, selectedPaper, checkTag }) {
   console.log("tags: " + JSON.stringify(tags))
@@ -30,12 +30,14 @@ export default function TagList({ tags, selectedPaper, checkTag }) {
   }
 
   return (
-    <div>
+    <div className={list}>
       <AddTagDialog tags={tags} />
       <DeleteTagsDialog tags={tags} />
-      <ul>
-        {tags.map(tag => _tagList(tag))}
-      </ul>
+      <div className={scroll}>
+        <ul>
+          {tags.map(tag => _tagList(tag))}
+        </ul>
+      </div>
     </div>
   )
 }
