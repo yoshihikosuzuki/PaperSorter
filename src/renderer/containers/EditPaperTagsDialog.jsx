@@ -9,6 +9,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { editPaperTags } from "../actions/index"
 
+const flattenTags = (tags) => {
+  return tags.map(tag => [tag, ...flattenTags(tag.children)]).flat()
+}
+
 const EditPaperTagsDialog = ({ dispatch, tags, selectedPaper }) => {
   const [open, setOpen] = React.useState(false)
   const [checkedTags, setCheckedTags] = React.useState([])
@@ -16,7 +20,7 @@ const EditPaperTagsDialog = ({ dispatch, tags, selectedPaper }) => {
   const handleOpen = () => {
     if (selectedPaper === "") return
     setOpen(true)
-    setCheckedTags(tags.filter(tag => tag.papers.includes(selectedPaper)).map(tag => tag.name))
+    setCheckedTags(flattenTags(tags).filter(tag => tag.papers.includes(selectedPaper)).map(tag => tag.name))
   }
   const handleClose = () => {
     setOpen(false)
@@ -42,7 +46,7 @@ const EditPaperTagsDialog = ({ dispatch, tags, selectedPaper }) => {
         <DialogTitle id="form-dialog-title">Edit tags of the selected paper</DialogTitle>
         <DialogContent>
           <ul>
-            {tags.map((tag, index) => (
+            {flattenTags(tags).map((tag, index) => (
               <li key={index}>
                 <FormControlLabel
                   control={

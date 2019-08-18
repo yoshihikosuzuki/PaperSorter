@@ -1,6 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import Button from '@material-ui/core/Button'
+import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -8,19 +9,29 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { addTag } from "../actions/index"
 
-const AddTagDialog = ({ dispatch }) => {
+const AddTagDialog = ({ dispatch, tags }) => {
   const [open, setOpen] = React.useState(false)
   let inputText = ""
+  const [parentTag, setParentTag] = React.useState("")
 
-  const handleOpen = () => { setOpen(true) }
-  const handleClose = () => { setOpen(false) }
+  const handleOpen = () => {
+    setOpen(true)
+    setParentTag("")
+  }
+  const handleClose = () => {
+    setOpen(false)
+    setParentTag("")
+  }
+  const handleChangeParentTag = (event) => {
+    setParentTag(event.target.value)
+  }
   const handleSubmit = () => {
-    dispatch(addTag(inputText.value))
+    dispatch(addTag(inputText.value, parentTag))
     handleClose()
   }
 
   return (
-    <div style={{display: "inline"}}>
+    <div style={{ display: "inline" }}>
       <Button variant="outlined" display="inline" color="primary" onClick={handleOpen}>
         Add a tag
       </Button>
@@ -35,6 +46,21 @@ const AddTagDialog = ({ dispatch }) => {
             inputRef={ref => { inputText = ref }}
             fullWidth
           />
+          <TextField
+            select
+            margin="dense"
+            id="parent-tag"
+            label="Parent Tag"
+            value={parentTag}
+            onChange={handleChangeParentTag}
+            fullWidth
+          >
+            {tags.map(tag => (
+              <MenuItem key={tag.name} value={tag.name}>
+                {tag.name}
+              </MenuItem>
+            ))}
+          </TextField>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

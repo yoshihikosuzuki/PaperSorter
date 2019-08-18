@@ -1,7 +1,8 @@
-export function addTag(name) {
+export function addTag(tagName, parentTagName) {
   return ({
     type: 'ADD_TAG',
-    name
+    tagName,
+    parentTagName
   })
 }
 

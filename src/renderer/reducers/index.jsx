@@ -5,19 +5,25 @@ const store = new Store({
     tags: [{
       name: "unclassified",
       checked: true,
-      childs: [],
+      children: [],
       papers: []
     }],
     papers: []
   }
 })
 
+const flattenTags = (tags) => {
+  return tags.map(tag => [tag, ...flattenTags(tag.children)]).flat()
+}
+
 const updateFilteredPapers = (tags, papers) => {
+  console.log(tags)
+  console.log(papers)
   /* Calculate intersection of the papers in the checked tags */
-  const checkedTags = tags.filter((tag) => tag.checked)
+  const checkedTags = flattenTags(tags).filter(tag => tag.checked)
   return checkedTags.length == 0
     ? papers.map(paper => paper.name)
-    : checkedTags.map((tag) => tag.papers).reduce((acc, cur) => acc.filter(x => cur.includes(x)))
+    : checkedTags.map(tag => tag.papers).reduce((acc, cur) => acc.filter(x => cur.includes(x)))
 }
 
 const initState = {
@@ -27,24 +33,77 @@ const initState = {
   selectedPaper: ""
 }
 
+const _doesExists = (tag, tagName) => {
+  if (tag.name === tagName) {
+    return true
+  }
+  for (const childTag of tag.children) {
+    if (_doesExists(childTag, tagName)) {
+      return true
+    }
+  }
+  return false
+}
+
+const doesExists = (tags, tagName) => {
+  for (const tag of tags) {
+    if (_doesExists(tag, tagName)) {
+      return true
+    }
+  }
+  return false
+}
+
+const sortTags = (tags) => {
+  return tags.sort((a, b) => {
+    const nameA = a.name.toUpperCase()
+    const nameB = b.name.toUpperCase()
+    return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0)
+  })
+}
+
+const _addTag = (tag, tagName, parentTagName) => {
+  return Object.assign({}, tag, {
+    children: tag.name === parentTagName
+      ? sortTags([...tag.children, {
+        name: tagName,
+        checked: false,
+        children: [],
+        papers: []
+      }])
+      : tag.children.map(childTag => _addTag(childTag, tagName, parentTagName))
+  })
+}
+
 const addTag = (state, action) => {
-  const newTags = [...state.tags, {
-    name: action.name,
-    checked: false,
-    childs: [],
-    papers: []
-  }]
+  /* Add a tag as a child of the specified tag while keeping the name order sorted */
+  console.log("addTag:", action.tagName)
+  if (doesExists(state.tags, action.tagName)) {
+    return state
+  }
+  const newTags = action.parentTagName === ""
+    ? [...state.tags, {
+      name: action.tagName,
+      checked: false,
+      children: [],
+      papers: []
+    }]   // root tag
+    : state.tags.map(tag => _addTag(tag, action.tagName, action.parentTagName))   // child tag
   store.set("tags", newTags)
   return Object.assign({}, state, {
     tags: newTags
   })
 }
 
-const checkTag = (state, action) => {
-  const newTags = state.tags.map(tag => Object.assign({}, tag, {
-    checked: tag.name === action.name ? !tag.checked : tag.checked
+const _checkTag = (tag, tagName) => {
+  return Object.assign({}, tag, {
+    checked: tag.name === tagName ? !tag.checked : tag.checked,
+    children: tag.children.map(childTag => _checkTag(childTag, tagName))
   })
-  )
+}
+
+const checkTag = (state, action) => {
+  const newTags = state.tags.map(tag => _checkTag(tag, action.name))
   store.set("tags", newTags)
   const newFilteredPapers = updateFilteredPapers(newTags, state.papers)
   return Object.assign({}, state, {
@@ -58,7 +117,7 @@ const deleteTags = (state, action) => {
   console.log(action.names)
   const newTags = state.tags.filter(tag => !action.names.includes(tag.name))
   const newPapers = state.papers.map(paper => Object.assign({}, paper, {
-    tags: paper.tags.filter(tagName => !action.names.includes(tagName))   // TODO: set ["unclassified"] if tags become empty
+    tags: paper.tags.filter(tagName => !action.names.includes(tagName))
   }))
   store.set("tags", newTags)
   store.set("papers", newPapers)

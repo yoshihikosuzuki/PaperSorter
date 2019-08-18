@@ -1,28 +1,37 @@
 import React from "react"
 import AddTagDialog from "../containers/AddTagDialog"
 import DeleteTagsDialog from "../containers/DeleteTagsDialog"
-import TagItem from "../containers/TagItem"
+import TagItem from "./TagItem"
+import { tagitem, childtag } from "./TagItem.scss"
 
-export default function TagList({ tags, selectedPaper }) {
-  //console.log("tags: " + JSON.stringify(tags))
+export default function TagList({ tags, selectedPaper, checkTag }) {
+  console.log("tags: " + JSON.stringify(tags))
+
+  const _tagList = (tag) => {
+    return (
+      <li className={tagitem}>
+        <TagItem
+          key={tag.name}
+          tag={tag}
+          selectedPaper={selectedPaper}
+        />
+        {
+          tag.children.length === 0 ? null : (
+            <ul className={childtag}>
+              {tag.children.map(childTag => _tagList(childTag))}
+            </ul>
+          )
+        }
+      </li>
+    )
+  }
+
   return (
     <div>
-      <AddTagDialog />
-      <DeleteTagsDialog
-        tags={tags}
-      />
+      <AddTagDialog tags={tags} />
+      <DeleteTagsDialog tags={tags} />
       <ul>
-        {tags.sort((a, b) => {
-          const nameA = a.name.toUpperCase()
-          const nameB = b.name.toUpperCase()
-          return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0)
-        }).map((tag, index) => (
-          <TagItem
-            key={index}
-            tag={tag}
-            selectedPaper={selectedPaper}
-          />
-        ))}
+        {tags.map(tag => _tagList(tag))}
       </ul>
     </div>
   )
