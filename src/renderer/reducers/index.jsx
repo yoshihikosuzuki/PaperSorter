@@ -13,6 +13,7 @@ const store = new Store({
 })
 
 const flattenTags = (tags) => {
+  /* Flatten tag tree (in order of DFS) */
   return tags.map(tag => [tag, ...flattenTags(tag.children)]).flat()
 }
 
@@ -113,11 +114,19 @@ const checkTag = (state, action) => {
   })
 }
 
+const _deleteTags = (tags, tagNames) => {
+  return tags.filter(tag => !tagNames.includes(tag.name)).map(tag => Object.assign({}, tag, {
+    children: _deleteTags(tag.children, tagNames)
+  }))
+}
+
 const deleteTags = (state, action) => {
+  /* Delete the tag(s) and all of its/their children tags */
   console.log(action.names)
-  const newTags = state.tags.filter(tag => !action.names.includes(tag.name))
+  const newTags = _deleteTags(state.tags, action.names)
+  const remainingTags = flattenTags(newTags)
   const newPapers = state.papers.map(paper => Object.assign({}, paper, {
-    tags: paper.tags.filter(tagName => !action.names.includes(tagName))
+    tags: paper.tags.filter(tagName => remainingTags.includes(tagName))
   }))
   store.set("tags", newTags)
   store.set("papers", newPapers)
@@ -136,7 +145,7 @@ const addPapers = (state, action) => {
   if (notRegisteredPapers.length == 0) {
     return state
   }
-  const newTags = state.tags.map((tag) => Object.assign({}, tag, {
+  const newTags = state.tags.map(tag => Object.assign({}, tag, {
     papers: tag.name !== "unclassified"
       ? tag.papers
       : [...tag.papers, ...notRegisteredPapers]
@@ -177,12 +186,17 @@ const deletePaper = (state) => {
   })
 }
 
+const _editPaperTags = (tag, paperName, checkedTags) => {
+  return Object.assign({}, tag, {
+    papers: checkedTags.includes(tag.name)
+      ? Array.from(new Set([...tag.papers, paperName]))
+      : tag.papers.filter(paper => paper !== paperName),
+    children: tag.children.map(childTag => _editPaperTags(childTag, paperName, checkedTags))
+  })
+}
+
 const editPaperTags = (state, action) => {
-  const newTags = state.tags.map(tag => Object.assign({}, tag, {
-    papers: action.checkedTags.includes(tag.name)
-      ? Array.from(new Set([...tag.papers, action.paperName]))
-      : tag.papers.filter(paperName => paperName !== action.paperName)
-  }))
+  const newTags = state.tags.map(tag => _editPaperTags(tag, action.paperName, action.checkedTags))
   const newPapers = state.papers.map(paper => Object.assign({}, paper, {
     tags: action.checkedTags
   }))

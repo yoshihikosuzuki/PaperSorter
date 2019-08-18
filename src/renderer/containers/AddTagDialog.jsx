@@ -9,6 +9,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { addTag } from "../actions/index"
 
+const flattenTags = (tags) => {
+  return tags.map(tag => [tag, ...flattenTags(tag.children)]).flat()
+}
+
 const AddTagDialog = ({ dispatch, tags }) => {
   const [open, setOpen] = React.useState(false)
   let inputText = ""
@@ -55,7 +59,7 @@ const AddTagDialog = ({ dispatch, tags }) => {
             onChange={handleChangeParentTag}
             fullWidth
           >
-            {tags.map(tag => (
+            {flattenTags(tags).map(tag => (
               <MenuItem key={tag.name} value={tag.name}>
                 {tag.name}
               </MenuItem>

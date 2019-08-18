@@ -9,11 +9,14 @@ export default function TagList({ tags, selectedPaper, checkTag }) {
 
   const _tagList = (tag) => {
     return (
-      <li className={tagitem}>
+      <li
+        className={tagitem}
+        key={tag.name}
+      >
         <TagItem
-          key={tag.name}
           tag={tag}
           selectedPaper={selectedPaper}
+          checkTag={checkTag}
         />
         {
           tag.children.length === 0 ? null : (

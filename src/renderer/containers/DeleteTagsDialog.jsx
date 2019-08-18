@@ -9,6 +9,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { deleteTags } from "../actions/index"
 
+const flattenTags = (tags) => {
+  return tags.map(tag => [tag, ...flattenTags(tag.children)]).flat()
+}
+
 const DeleteTagsDialog = ({ dispatch, tags }) => {
   const [open, setOpen] = React.useState(false)
   const [checkedTags, setCheckedTags] = React.useState([])
@@ -41,7 +45,7 @@ const DeleteTagsDialog = ({ dispatch, tags }) => {
         <DialogTitle id="form-dialog-title">Delete tag(s)</DialogTitle>
         <DialogContent>
           <ul>
-            {tags.map((tag, index) => (
+            {flattenTags(tags).map((tag, index) => (
               <li key={index}>
                 <FormControlLabel
                   control={
