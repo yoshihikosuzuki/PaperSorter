@@ -13,8 +13,8 @@ export default function PaperList({
   selectPaper,
   deletePaper
 }) {
-  console.log("filtered papers: " + JSON.stringify(filteredPapers))
-  console.log("selected paper: " + JSON.stringify(selectedPaper))
+  //console.log("filtered papers: " + JSON.stringify(filteredPapers))
+  //console.log("selected paper: " + JSON.stringify(selectedPaper))
 
   const handleClickDelete = () => {
     if (selectedPaper !== "") deletePaper()

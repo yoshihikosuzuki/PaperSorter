@@ -5,7 +5,7 @@ import TagItem from "./TagItem"
 import { list, tagitem, childtag, scroll } from "./TagItem.scss"
 
 export default function TagList({ tags, selectedPaper, checkTag }) {
-  console.log("tags: " + JSON.stringify(tags))
+  //console.log("tags: " + JSON.stringify(tags))
 
   const _tagList = (tag) => {
     return (

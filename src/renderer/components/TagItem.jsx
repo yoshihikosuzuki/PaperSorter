@@ -4,7 +4,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { normal, selected } from "./TagItem.scss"
 
 const TagItem = ({ tag, selectedPaper, checkTag }) => {
-  console.log("tag: " + JSON.stringify(tag))
+  //console.log("tag: " + JSON.stringify(tag))
   const handleChange = () => {
     checkTag(tag.name)
   }

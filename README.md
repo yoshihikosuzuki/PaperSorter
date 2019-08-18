@@ -39,3 +39,14 @@ I am not satisfied with the current applications for paper management, e.g. Mend
 * Tag highlight of the selected file
 * Simple in-page string search
 
+
+
+## Simple GIFs
+
+### Add a paper
+
+![](https://github.com/yoshihikosuzuki/PaperSorter/assets/add_a_paper.gif)
+
+### Edit tags of a paper
+
+![](https://github.com/yoshihikosuzuki/PaperSorter/assets/edit_tags.gif)
