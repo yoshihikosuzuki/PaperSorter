@@ -45,8 +45,8 @@ I am not satisfied with the current applications for paper management, e.g. Mend
 
 ### Add a paper
 
-![](https://github.com/yoshihikosuzuki/PaperSorter/assets/add_a_paper.gif)
+![](https://github.com/yoshihikosuzuki/PaperSorter/blob/master/assets/add_a_paper.gif)
 
 ### Edit tags of a paper
 
-![](https://github.com/yoshihikosuzuki/PaperSorter/assets/edit_tags.gif)
+![](https://github.com/yoshihikosuzuki/PaperSorter/blob/master/assets/edit_tags.gif)
