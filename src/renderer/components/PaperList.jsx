@@ -1,4 +1,5 @@
 import { basename } from "path"
+import { access } from "fs"
 import React from "react"
 import Button from '@material-ui/core/Button'
 import AddPapersDialog from "../containers/AddPapersDialog"
@@ -16,8 +17,40 @@ export default function PaperList({
   //console.log("filtered papers: " + JSON.stringify(filteredPapers))
   //console.log("selected paper: " + JSON.stringify(selectedPaper))
 
+  const handleClick = (paper) => {
+    selectPaper(paper)
+  }
+
+  const handleDoubleClick = (paper) => {
+    access(paper, (err) => {
+      if (err) {
+        alert("No such file: " + paper)
+      } else {
+        shell.openItem(paper)
+      }
+    })
+  }
+
   const handleClickDelete = () => {
-    if (selectedPaper !== "") deletePaper()
+    if (selectedPaper !== "") {
+      deletePaper()
+    } else {
+      alert("Click after selecting a paper")
+    }
+  }
+
+  const handleClickFinder = () => {
+    if (selectedPaper !== "") {
+      access(selectedPaper, (err) => {
+        if (err) {
+          alert("No such file: " + selectedPaper)
+        } else {
+          shell.showItemInFolder(selectedPaper)
+        }
+      })
+    } else {
+      alert("Click after selecting a paper")
+    }
   }
 
   return (
@@ -28,7 +61,10 @@ export default function PaperList({
         selectedPaper={selectedPaper}
       />
       <Button variant="outlined" display="inline" color="primary" onClick={handleClickDelete}>
-        Delete selected paper
+        Delete a paper
+      </Button>
+      <Button variant="outlined" display="inline" color="primary" onClick={handleClickFinder}>
+        Show in Finder
       </Button>
       <div className={scroll}>
         <table>
@@ -50,8 +86,8 @@ export default function PaperList({
                   className={
                     selectedPaper && selectedPaper === paper ? selected : normal
                   }
-                  onClick={() => selectPaper(paper)}
-                  onDoubleClick={() => shell.openItem(paper)}
+                  onClick={() => handleClick(paper)}
+                  onDoubleClick={() => handleDoubleClick(paper)}
                 >
                   <td>{basename(paper)}</td>
                 </tr>
