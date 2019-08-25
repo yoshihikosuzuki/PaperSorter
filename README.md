@@ -41,6 +41,17 @@ I am not satisfied with the current applications for paper management, e.g. Mend
 
 
 
+## Note
+
+PaperSorter does not have a function of metadata search for registered papers. Therefore, I highly recommend using it with Zotero (and zotfile) as follows:
+
+1. Create a sinlge collection folder in Zotero named, for example, `All`
+2. Change the Zotero setting so that it automatically renames the input PDF file name based on its metadata
+3. Install zotfile and change the zotfile setting so that it moves PDF files from Zotero's original directory to a directory specified using Right click -> `Manage Attachments` -> `Rename Attachments` option
+4. 1) Put papers in `All` of Zotero, 2) select all papers and do `Rename Attachments` above, and then 3) open the moved files in PaperSorter
+
+
+
 ## Simple GIFs
 
 ### Add a paper

@@ -13,13 +13,22 @@ export default function createMenu(win) {
       ]
     }] : []),
     {
-      label: "View",
+      label: "Edit",
       submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "selectall" },
+        { type: 'separator' },
         {
           label: "Search",
           accelerator: "CommandOrControl+F",
           click: () => win.webContents.send('search')
         },
+        { type: 'separator' },
         {
           label: 'Toggle Developer Tools',
           accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
