@@ -45,7 +45,7 @@ PaperSorter does not have a function of metadata search for registered papers. T
 
 Any file added to PaperSorter has, at first, a single pre-defined tag `unclassified`.
 
-## Simple GIFs
+## Simple GIF of usage examples
 
 ### Add a paper
 
