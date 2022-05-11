@@ -13,7 +13,7 @@ const store = createStore(reducer)
 
 render(
   <Provider store={store}>
-    <SplitPane split="vertical" minSize={256} defaultSize={256}>
+    <SplitPane split="vertical" minSize={300} defaultSize={300}>
       <TagList />
       <PaperList />
     </SplitPane>
